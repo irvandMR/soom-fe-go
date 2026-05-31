@@ -1,0 +1,15 @@
+export const BREADCRUMBMAP: Record<string, string[]> = {
+  '/':                        ['Main Menu', 'Dashboard'],
+  '/orders':                  ['Main Menu', 'Order'],
+  '/products':                ['Main Menu', 'Produk & Resep'],
+  '/ingredients':             ['Main Menu', 'Stok Bahan Baku'],
+  '/productions':             ['Main Menu', 'Produksi'],
+  '/cash-flow':               ['Main Menu', 'Keuangan'],
+  '/settings/units':          ['Settings', 'Units'],
+  '/settings/categories':     ['Settings', 'Kategori'],
+  '/admin/users':             ['Administrator', 'User Management'],
+  '/admin/tenant':            ['Administrator', 'Tenant Management'],
+  '/profile':                 ['Akun', 'Profile'],
+  '/profile/change-password': ['Akun', 'Profile', 'Ganti Password'],
+  '/docs':                    ['Guide', 'Dokumentasi'],
+}
