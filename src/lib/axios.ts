@@ -39,54 +39,61 @@ api.interceptors.request.use((config) => {
 
 // Response interceptor
 api.interceptors.response.use(
-	(response) => {
-		useLoadingStore.getState().hide();
-		return response;
-	},
-	async (error) => {
-		useLoadingStore.getState().hide();
-		const original = error.config;
+  (response) => {
+    useLoadingStore.getState().hide()
+    return response
+  },
+  async (error) => {
+    useLoadingStore.getState().hide()
+    const original = error.config
 
-		if (error.response?.status === 401 && !original._retry) {
-			// Jika sudah dalam proses refresh, tambah ke queue
-			if (isRefreshing) {
-				return new Promise((resolve, reject) => {
-					failedQueue.push({ resolve, reject });
-				})
-					.then((token) => {
-						original.headers.Authorization = `Bearer ${token}`;
-						return api(original);
-					})
-					.catch((err) => Promise.reject(err));
-			}
+    // ✅ Skip refresh kalau:
+    // 1. Bukan 401
+    // 2. Sudah pernah retry
+    // 3. Request dari endpoint auth (login, refresh, logout)
+    const isAuthEndpoint = original.url?.includes('/auth/')
 
-			original._retry = true;
-			isRefreshing = true;
+    if (error.response?.status === 401 
+      && !original._retry 
+      && !isAuthEndpoint        // ← tambah ini
+    ) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject })
+        })
+          .then((token) => {
+            original.headers.Authorization = `Bearer ${token}`
+            return api(original)
+          })
+          .catch((err) => Promise.reject(err))
+      }
 
-			try {
-				const res = await axios.post(
-					`${import.meta.env.VITE_API_URL || "http://localhost:8081/api/v1"}/auth/refresh`,
-					{},
-					{ withCredentials: true },
-				);
-				const newToken = res.data.data.accessToken;
-				useAuthStore
-					.getState()
-					.setAuth(newToken, useAuthStore.getState().user!);
-				original.headers.Authorization = `Bearer ${newToken}`;
-				processQueue(null, newToken);
-				return api(original);
-			} catch (refreshError) {
-				processQueue(refreshError, null);
-				useAuthStore.getState().clearAuth();
-				window.location.href = "/login";
-				return Promise.reject(refreshError);
-			} finally {
-				isRefreshing = false;
-			}
-		}
-		return Promise.reject(error);
-	},
-);
+      original._retry = true
+      isRefreshing = true
+
+      try {
+        const res = await axios.post(
+          `${import.meta.env.VITE_API_URL}/auth/refresh`,
+          {},
+          { withCredentials: true }
+        )
+        const newToken = res.data.data.accessToken
+        useAuthStore.getState().setAuth(newToken, useAuthStore.getState().user!)
+        original.headers.Authorization = `Bearer ${newToken}`
+        processQueue(null, newToken)
+        return api(original)
+      } catch (refreshError) {
+        processQueue(refreshError, null)
+        useAuthStore.getState().clearAuth()
+        window.location.href = '/login'
+        return Promise.reject(refreshError)
+      } finally {
+        isRefreshing = false
+      }
+    }
+
+    return Promise.reject(error)
+  }
+)
 
 export default api;

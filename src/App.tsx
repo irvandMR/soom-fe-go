@@ -1,14 +1,15 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import DashboardPage from "./pages/DashboardPage";
 import LoginPage from "./pages/LoginPage";
 import AppLayout from "./components/common/AppLayout";
 import { ROUTES } from "./constant/routes";
 import DocumentationPage from "./pages/DocumentationPage";
-import UnitPage from "./pages/UnitPage";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import { useAuthStore } from "./store/useAuthStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { authService } from "./service/auth.service";
+import UnitPage from "./pages/UnitPage";
 
 function App() {
 	const { accessToken, setAuth } = useAuthStore();
@@ -22,8 +23,10 @@ function App() {
 			}
 			try {
 				// Cek apakah token masih valid dengan hit /auth/me
-				const res = await api.get("/auth/me");
-				setAuth(accessToken, res.data.data);
+				const res = await authService.me();
+				console.log("Session valid, user:", JSON.stringify(res));
+				console.log("Session valid, user:", JSON.stringify(res.data.result));
+				setAuth(accessToken, {id: '', username: res.data.result.username, email: '', role: ''}) // TODO: set user sebenarnya;
 			} catch {
 				// Token expired dan refresh gagal → sudah di-handle interceptor
 			} finally {
@@ -65,18 +68,18 @@ function App() {
 				}
 			>
 				<Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
-				{/* <Route path={ROUTES.ORDERS} element={<OrderPage />} />
-				<Route path={ROUTES.INGREDIENTS} element={<IngredientPage />} />
-				<Route path={ROUTES.PRODUCTS} element={<ProductPage />} />
-				<Route path={ROUTES.PRODUCTIONS} element={<ProductionPage />} />
-				<Route path={ROUTES.CASH_FLOW} element={<CashFlowPage />} />
-				<Route
+				{/* {/* <Route path={ROUTES.ORDERS} element={<OrderPage />} /> */}
+				{/* <Route path={ROUTES.INGREDIENTS} element={<IngredientPage />} /> */}
+				{/* <Route path={ROUTES.PRODUCTS} element={<ProductPage />} /> */}
+				{/* <Route path={ROUTES.PRODUCTIONS} element={<ProductionPage />} /> */}
+				{/* <Route path={ROUTES.CASH_FLOW} element={<CashFlowPage />} /> */}
+				{/* <Route
 					path={ROUTES.PRODUCT_RECIPE_HISTORY}
 					element={<ProductRecipeHistoryPage />}
-				/>
-				<Route path={ROUTES.UNITS} element={<UnitsPage />} />
-				<Route path={ROUTES.CATEGORIES} element={<CategoriesPage />} />
-				<Route path={ROUTES.USERS} element={<UserManagementPage />} /> */}
+				/> */}
+				<Route path={ROUTES.UNITS} element={<UnitPage />} />
+				{/* <Route path={ROUTES.CATEGORIES} element={<CategoriesPage />} /> */}
+				{/* <Route path={ROUTES.USERS} element={<UserManagementPage />} /> */}
 				<Route path={ROUTES.DOCS} element={<DocumentationPage />} />
 			</Route>
 
