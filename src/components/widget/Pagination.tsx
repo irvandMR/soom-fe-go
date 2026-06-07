@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { type DataMeta } from "./useDataQuery";
+import { type DataMeta } from "../../hooks/useDataQuery";
 import { cn } from "@/lib/utils";
 
 interface PaginationProps {

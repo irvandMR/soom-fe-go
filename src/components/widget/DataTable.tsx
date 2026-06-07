@@ -1,4 +1,4 @@
-import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
+import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -6,40 +6,48 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { Skeleton } from '@/components/ui/skeleton'
-import { type SortState } from './useDataQuery'
-import { cn } from '@/lib/utils'
+} from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+import { type SortState } from "../../hooks/useDataQuery";
+import { cn } from "@/lib/utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface ColumnDef<T = Record<string, unknown>> {
-  key: string
-  label: string
-  render?: (value: unknown, row: T) => React.ReactNode
-  sortable?: boolean
-  width?: string
-  align?: 'left' | 'center' | 'right'
+  key: string;
+  label: string;
+  render?: (value: unknown, row: T) => React.ReactNode;
+  sortable?: boolean;
+  width?: string;
+  align?: "left" | "center" | "right";
 }
 
 interface DataTableProps<T> {
-  columns: ColumnDef<T>[]
-  rows: T[]
-  isLoading?: boolean
-  isError?: boolean
-  sort?: SortState | null
-  onSort?: (key: string) => void
-  emptyMessage?: string
+  columns: ColumnDef<T>[];
+  rows: T[];
+  isLoading?: boolean;
+  isError?: boolean;
+  sort?: SortState | null;
+  onSort?: (key: string) => void;
+  emptyMessage?: string;
 }
 
 // ─── Sort Icon ────────────────────────────────────────────────────────────────
 
-function SortIcon({ columnKey, sort }: { columnKey: string; sort?: SortState | null }) {
+function SortIcon({
+  columnKey,
+  sort,
+}: {
+  columnKey: string;
+  sort?: SortState | null;
+}) {
   if (!sort || sort.key !== columnKey)
-    return <ChevronsUpDown size={11} className="text-muted-foreground/40" />
-  return sort.dir === 'asc'
-    ? <ChevronUp size={11} className="text-[var(--fandm-primary)]" />
-    : <ChevronDown size={11} className="text-[var(--fandm-primary)]" />
+    return <ChevronsUpDown size={11} className="text-muted-foreground/40" />;
+  return sort.dir === "asc" ? (
+    <ChevronUp size={11} className="text-[var(--fandm-primary)]" />
+  ) : (
+    <ChevronDown size={11} className="text-[var(--fandm-primary)]" />
+  );
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -51,30 +59,33 @@ export default function DataTable<T = Record<string, unknown>>({
   isError,
   sort,
   onSort,
-  emptyMessage = 'Belum ada data.',
+  emptyMessage = "Belum ada data.",
 }: DataTableProps<T>) {
   return (
     <div className="rounded-lg border border-[var(--fandm-border)] overflow-hidden bg-white">
       <Table>
         <TableHeader>
-          <TableRow className="bg-[var(--fandm-bg)] hover:bg-[var(--fandm-bg)]">
-            {columns.map(col => (
+          <TableRow className="bg-[var(--fandm-primary)] hover:bg-[var(--fandm-primary-light)]">
+            {columns.map((col) => (
               <TableHead
                 key={col.key}
                 style={{ width: col.width }}
                 onClick={() => col.sortable && onSort?.(col.key)}
                 className={cn(
-                  'text-[11px] font-semibold uppercase tracking-wide text-muted-foreground whitespace-nowrap',
-                  col.align === 'center' && 'text-center',
-                  col.align === 'right' && 'text-right',
-                  col.sortable && 'cursor-pointer select-none hover:text-foreground transition-colors'
+                  "text-[11px] text-[var(--fandm-text-secondary)] font-semibold uppercase tracking-wide  whitespace-nowrap",
+                  col.align === "center" && "text-center",
+                  col.align === "right" && "text-right",
+                  col.sortable &&
+                    "cursor-pointer select-none hover:text-[var(--fandm-text)] transition-colors",
                 )}
               >
-                <div className={cn(
-                  'flex items-center gap-1',
-                  col.align === 'center' && 'justify-center',
-                  col.align === 'right' && 'justify-end',
-                )}>
+                <div
+                  className={cn(
+                    "flex items-center gap-1",
+                    col.align === "center" && "justify-center",
+                    col.align === "right" && "justify-end",
+                  )}
+                >
                   {col.label}
                   {col.sortable && <SortIcon columnKey={col.key} sort={sort} />}
                 </div>
@@ -96,33 +107,42 @@ export default function DataTable<T = Record<string, unknown>>({
             ))
           ) : isError ? (
             <TableRow>
-              <TableCell colSpan={columns.length} className="py-10 text-center text-sm text-destructive">
+              <TableCell
+                colSpan={columns.length}
+                className="py-10 text-center text-sm text-destructive"
+              >
                 Gagal memuat data. Silakan coba lagi.
               </TableCell>
             </TableRow>
           ) : rows.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={columns.length} className="py-10 text-center text-sm text-muted-foreground">
+              <TableCell
+                colSpan={columns.length}
+                className="py-10 text-center text-sm text-muted-foreground"
+              >
                 {emptyMessage}
               </TableCell>
             </TableRow>
           ) : (
             rows.map((row, i) => (
-              <TableRow key={i} className="hover:bg-[var(--fandm-bg)] transition-colors">
-                {columns.map(col => {
-                  const val = (row as Record<string, unknown>)[col.key]
+              <TableRow
+                key={i}
+                className="hover:bg-[var(--fandm-bg)] transition-colors"
+              >
+                {columns.map((col) => {
+                  const val = (row as Record<string, unknown>)[col.key];
                   return (
                     <TableCell
                       key={col.key}
                       className={cn(
-                        'text-sm text-[var(--fandm-text)]',
-                        col.align === 'center' && 'text-center',
-                        col.align === 'right' && 'text-right',
+                        "text-sm text-[var(--fandm-text)]",
+                        col.align === "center" && "text-center",
+                        col.align === "right" && "text-right",
                       )}
                     >
-                      {col.render ? col.render(val, row) : String(val ?? '-')}
+                      {col.render ? col.render(val, row) : String(val ?? "-")}
                     </TableCell>
-                  )
+                  );
                 })}
               </TableRow>
             ))
@@ -130,5 +150,5 @@ export default function DataTable<T = Record<string, unknown>>({
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }

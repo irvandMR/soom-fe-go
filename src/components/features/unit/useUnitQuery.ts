@@ -1,17 +1,21 @@
-import { useDataQuery } from '@/components/widget/useDataQuery'
+import { useDataQuery } from "@/hooks/useDataQuery";
 
 export interface Unit {
-  Id: string
-  Name: string
-  Symbol: string
-  CreatedAt: string
-  UpdatedAt: string
+  Id: string;
+  Name: string;
+  Code: string;
+  Symbol: string;
+  HaveConversion: boolean;
+  BaseUnit: string;
+  ConversionFactor: number;
+  CreatedAt: string;
+  UpdatedAt: string;
 }
 
 export function useUnitQuery() {
   return useDataQuery<Unit>({
-    url: '/uoms',
-    queryKey: 'units',
+    url: "/uoms",
+    queryKey: "units",
     pageSize: 10,
-  })
+  });
 }

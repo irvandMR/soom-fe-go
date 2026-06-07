@@ -48,8 +48,14 @@ export default function FilterBar({
               onFilterChange(f.key, val === "__all__" ? "" : val)
             }
           >
-            <SelectTrigger className="h-8 text-xs">
-              <SelectValue placeholder={allOptionLabel} />
+            <SelectTrigger
+              className="h-8 text-xs border-white/20 bg-white/10 text-[var(--fandm-text-secondary)] data-placeholder:text-white"
+              iconClassName="text-white"
+            >
+              <SelectValue
+                className="h-8 text-xs "
+                placeholder={allOptionLabel}
+              />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="__all__">Semua</SelectItem>
@@ -65,7 +71,12 @@ export default function FilterBar({
 
       {activeCount > 0 && (
         <div className="flex items-end pb-0.5">
-          <Button variant="ghost" size="sm" onClick={onReset}>
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            onClick={onReset}
+            className="text-[var(--fandm-text-secondary)]"
+          >
             Reset
           </Button>
         </div>
@@ -79,9 +90,9 @@ export default function FilterBar({
       {isMobile && (
         <>
           <Button
-            variant="outline"
+            variant="outline-secondary"
             size="sm"
-            icon={<SlidersHorizontal size={13} />}
+            icon={<SlidersHorizontal size={13} className="text-white" />}
             onClick={() => setOpen((v) => !v)}
             className={cn(
               "w-auto",

@@ -13,10 +13,15 @@ import UnitCard from "@/components/features/unit/UnitCard";
 import CardList from "@/components/widget/CardList";
 import FilterBar from "@/components/widget/FilterBar";
 import BannerBackground from "@/components/common/BannerBackground";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
+import FormModalUnit from "@/components/features/unit/FormModalUnit";
+import { confirm } from "@/store/useConfirmStore";
+import { useDeleteUnit } from "@/components/features/unit/useUnitMutation";
 
 export default function UnitPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
+  const { isMobile } = useBreakpoint();
 
   const {
     rows,
@@ -47,14 +52,29 @@ export default function UnitPage() {
     },
   ];
 
+  const deleteMutation = useDeleteUnit();
+
+  // Update handleEdit
   const handleEdit = (unit: Unit) => {
     setSelectedUnit(unit);
-    // TODO: buka modal edit
+    setShowAddModal(true); // pakai modal yang sama
   };
 
+  // Update handleDelete — pakai confirm dialog
   const handleDelete = (unit: Unit) => {
-    setSelectedUnit(unit);
-    // TODO: buka modal konfirmasi hapus
+    confirm({
+      title: `Hapus unit "${unit.Name}"?`,
+      description: "Data yang dihapus tidak bisa dikembalikan.",
+      confirmLabel: "Ya, hapus",
+      variant: "danger",
+      onConfirm: () => deleteMutation.mutate(unit.Id),
+    });
+  };
+
+  // Saat modal ditutup, reset selectedUnit juga
+  const handleClose = () => {
+    setShowAddModal(false);
+    setSelectedUnit(null);
   };
 
   const emptyMessage = search
@@ -102,22 +122,8 @@ export default function UnitPage() {
           isLoading={isLoading}
         />
       )}
-      {/* Desktop — Table */}
-      <div className="hidden md:block">
-        <UnitTable
-          rows={rows}
-          isLoading={isLoading}
-          isError={isError}
-          sort={sort}
-          onSort={setSort}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          emptyMessage={emptyMessage}
-        />
-      </div>
 
-      {/* Mobile — Card list */}
-      <div className="md:hidden">
+      {isMobile ? (
         <CardList<Unit>
           rows={rows}
           isLoading={isLoading}
@@ -132,8 +138,23 @@ export default function UnitPage() {
             />
           )}
         />
-      </div>
-
+      ) : (
+        <UnitTable
+          rows={rows}
+          isLoading={isLoading}
+          isError={isError}
+          sort={sort}
+          onSort={setSort}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          emptyMessage={emptyMessage}
+        />
+      )}
+      <FormModalUnit
+        open={showAddModal}
+        onClose={handleClose}
+        editData={selectedUnit}
+      />
       {/* TODO: Modal tambah/edit */}
       {/* TODO: Modal konfirmasi hapus */}
     </div>

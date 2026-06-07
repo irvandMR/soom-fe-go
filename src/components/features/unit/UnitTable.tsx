@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import DataTable, { type ColumnDef } from "@/components/widget/DataTable";
-import { type SortState } from "@/components/widget/useDataQuery";
+import { type SortState } from "@/hooks/useDataQuery";
 import { type Unit } from "./useUnitQuery";
 import { MoreHorizontal } from "lucide-react";
 

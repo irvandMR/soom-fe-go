@@ -7,6 +7,7 @@ import { BookOpen, ChevronLeft, ChevronRight } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import BannerBackground from "./BannerBackground";
 import logo from "@/assets/image.png";
+import { useAuthStore } from "@/store/useAuthStore";
 
 function NavItem({
   path,
@@ -56,11 +57,10 @@ function SidebarContent({
   collapsed: boolean;
   onClose?: () => void;
 }) {
-  //   const { user } = useAuthStore()
-  const user = { role: "admin", name: "Rizky", email: "rizky@gmail.com" };
+  const { user } = useAuthStore();
   const role = user?.role ?? "all";
   const initials =
-    user?.name
+    user?.username
       ?.split(" ")
       .slice(0, 2)
       .map((n) => n[0])
@@ -140,7 +140,7 @@ function SidebarContent({
         {!collapsed && (
           <div className="min-w-0">
             <p className="text-white text-xs font-medium truncate leading-tight">
-              {user?.name ?? "Admin"}
+              {user?.username ?? "Admin"}
             </p>
             <p className="text-white/40 text-[10px] truncate">{user?.email}</p>
           </div>

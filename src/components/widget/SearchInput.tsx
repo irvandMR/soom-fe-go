@@ -27,7 +27,7 @@ export default function SearchInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="pl-8 pr-8 h-9 text-sm placeholder:text-[var(--fandm-text-secondary)]"
+        className="pl-8 pr-8 h-9 text-sm placeholder:text-[var(--fandm-text-secondary)] text-[var(--fandm-text-secondary)]"
       />
       {value && (
         <button
