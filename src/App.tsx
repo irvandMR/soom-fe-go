@@ -10,6 +10,7 @@ import { useAuthStore } from "./store/useAuthStore";
 import { useEffect, useState } from "react";
 import { authService } from "./service/auth.service";
 import UnitPage from "./pages/UnitPage";
+import CategoriPage from "./pages/CategoriPage";
 
 function App() {
   const { accessToken, setAuth } = useAuthStore();
@@ -82,7 +83,7 @@ function App() {
 					element={<ProductRecipeHistoryPage />}
 				/> */}
           <Route path={ROUTES.UNITS} element={<UnitPage />} />
-          {/* <Route path={ROUTES.CATEGORIES} element={<CategoriesPage />} /> */}
+          <Route path={ROUTES.CATEGORIES} element={<CategoriPage />} />
           {/* <Route path={ROUTES.USERS} element={<UserManagementPage />} /> */}
           <Route path={ROUTES.DOCS} element={<DocumentationPage />} />
         </Route>

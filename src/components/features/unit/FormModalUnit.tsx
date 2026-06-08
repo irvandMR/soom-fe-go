@@ -1,6 +1,6 @@
 // src/components/features/unit/FormModalUnit.tsx
 import { useEffect } from "react";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { unitSchema, type UnitFormData } from "./unitSchema";
 import { useCreateUnit, useUpdateUnit } from "./useUnitMutation";
@@ -24,19 +24,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { confirm } from "@/store/useConfirmStore";
+import { BASE_UNIT } from "@/constant/options";
 
 interface FormModalUnitProps {
   open: boolean;
   onClose: () => void;
   editData?: Unit | null; // null = mode tambah, ada data = mode edit
 }
-
-const baseUnitOptions = [
-  { label: "Kilogram", value: "kg" },
-  { label: "Liter", value: "L" },
-  { label: "Pcs", value: "pcs" },
-  { label: "Meter", value: "m" },
-];
 
 export default function FormModalUnit({
   open,
@@ -45,6 +39,7 @@ export default function FormModalUnit({
 }: FormModalUnitProps) {
   const isEdit = !!editData;
   const title = isEdit ? "Edit Unit" : "Tambah Unit";
+  const baseUnitOptions = BASE_UNIT;
 
   const {
     register,

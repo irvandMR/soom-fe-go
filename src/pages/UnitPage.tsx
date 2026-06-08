@@ -17,6 +17,7 @@ import { useBreakpoint } from "@/hooks/useBreakpoint";
 import FormModalUnit from "@/components/features/unit/FormModalUnit";
 import { confirm } from "@/store/useConfirmStore";
 import { useDeleteUnit } from "@/components/features/unit/useUnitMutation";
+import { BASE_UNIT } from "@/constant/options";
 
 export default function UnitPage() {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -43,24 +44,17 @@ export default function UnitPage() {
     {
       key: "base_unit",
       label: "Unit Dasar",
-      options: [
-        { label: "Kilogram", value: "kg" },
-        { label: "Liter", value: "L" },
-        { label: "Pcs", value: "pcs" },
-        { label: "Meter", value: "m" },
-      ],
+      options: BASE_UNIT,
     },
   ];
 
   const deleteMutation = useDeleteUnit();
 
-  // Update handleEdit
   const handleEdit = (unit: Unit) => {
     setSelectedUnit(unit);
-    setShowAddModal(true); // pakai modal yang sama
+    setShowAddModal(true);
   };
 
-  // Update handleDelete — pakai confirm dialog
   const handleDelete = (unit: Unit) => {
     confirm({
       title: `Hapus unit "${unit.Name}"?`,
@@ -71,7 +65,6 @@ export default function UnitPage() {
     });
   };
 
-  // Saat modal ditutup, reset selectedUnit juga
   const handleClose = () => {
     setShowAddModal(false);
     setSelectedUnit(null);
@@ -150,13 +143,12 @@ export default function UnitPage() {
           emptyMessage={emptyMessage}
         />
       )}
+
       <FormModalUnit
         open={showAddModal}
         onClose={handleClose}
         editData={selectedUnit}
       />
-      {/* TODO: Modal tambah/edit */}
-      {/* TODO: Modal konfirmasi hapus */}
     </div>
   );
 }

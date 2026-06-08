@@ -47,16 +47,16 @@ const columns = (
       </span>
     ),
   },
-  {
-    key: "CreatedAt",
-    label: "Dibuat",
-    render: (val) =>
-      new Date(String(val)).toLocaleDateString("id-ID", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }),
-  },
+  // {
+  //   key: "CreatedAt",
+  //   label: "Dibuat",
+  //   render: (val) =>
+  //     new Date(String(val)).toLocaleDateString("id-ID", {
+  //       day: "2-digit",
+  //       month: "short",
+  //       year: "numeric",
+  //     }),
+  // },
   {
     key: "HaveConversion",
     label: "Memiliki Konversi",
