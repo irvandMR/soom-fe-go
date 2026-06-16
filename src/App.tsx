@@ -11,9 +11,27 @@ import { useEffect, useState } from "react";
 import { authService } from "./service/auth.service";
 import UnitPage from "./pages/UnitPage";
 import CategoriPage from "./pages/CategoriPage";
+import Ingredientpage from "./pages/IngredientPage";
+import ProductPage from "./pages/ProductPage";
+import ProductionPage from "./pages/ProductionPage";
+import CashFlowPage from "./pages/CashFlowPage";
+import UserManagementPage from "./pages/UserManagementPage";
+import TenantManagementPage from "./pages/TenantManagementPage";
+import ProfilePage from "./pages/ProfilePage";
+import OrderPage from "./pages/OrderPage";
+
+import { useActiveTenantStore } from "./store/useActiveTenantStore";
+
+const DUMMY_EMAIL_TENANT_MAP: Record<string, string> = {
+  "irvandi@soom.com": "ten-1",
+  "budi.kasir@soom.com": "ten-1",
+  "siti.staff@soom.com": "ten-2",
+  "andi@soom.com": "ten-3",
+};
 
 function App() {
-  const { accessToken, setAuth } = useAuthStore();
+  const { accessToken, setAuth, clearAuth, user } = useAuthStore();
+  const { setActiveTenantId } = useActiveTenantStore();
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
@@ -23,22 +41,33 @@ function App() {
         return;
       }
       try {
-        // Cek apakah token masih valid dengan hit /auth/me
         const res = await authService.me();
+        const result = res.data.result;
+        const email = result.email || "";
+        const role = result.role || "user";
+        const tenantId = DUMMY_EMAIL_TENANT_MAP[email] || result.tenantId || result.tenant_id || "ten-1";
+
         setAuth(accessToken, {
-          id: "",
-          username: res.data.result.username,
-          email: "",
-          role: "",
-        }); // TODO: set user sebenarnya;
+          id: result.id || "",
+          username: result.username,
+          email,
+          role,
+          tenantId,
+        });
       } catch {
-        // Token expired dan refresh gagal → sudah di-handle interceptor
+        clearAuth();
       } finally {
         setChecking(false);
       }
     };
     checkSession();
   }, []);
+
+  useEffect(() => {
+    if (user && user.role !== "superadmin" && user.tenantId) {
+      setActiveTenantId(user.tenantId);
+    }
+  }, [user, setActiveTenantId]);
 
   if (checking)
     return (
@@ -73,18 +102,17 @@ function App() {
           }
         >
           <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
-          {/* {/* <Route path={ROUTES.ORDERS} element={<OrderPage />} /> */}
-          {/* <Route path={ROUTES.INGREDIENTS} element={<IngredientPage />} /> */}
-          {/* <Route path={ROUTES.PRODUCTS} element={<ProductPage />} /> */}
-          {/* <Route path={ROUTES.PRODUCTIONS} element={<ProductionPage />} /> */}
-          {/* <Route path={ROUTES.CASH_FLOW} element={<CashFlowPage />} /> */}
-          {/* <Route
-					path={ROUTES.PRODUCT_RECIPE_HISTORY}
-					element={<ProductRecipeHistoryPage />}
-				/> */}
+          <Route path={ROUTES.ORDERS} element={<OrderPage />} />
+          <Route path={ROUTES.INGREDIENTS} element={<Ingredientpage />} />
+          <Route path={ROUTES.PRODUCTS} element={<ProductPage />} />
+          <Route path={ROUTES.PRODUCTIONS} element={<ProductionPage />} />
+          <Route path={ROUTES.CASH_FLOW} element={<CashFlowPage />} />
           <Route path={ROUTES.UNITS} element={<UnitPage />} />
           <Route path={ROUTES.CATEGORIES} element={<CategoriPage />} />
-          {/* <Route path={ROUTES.USERS} element={<UserManagementPage />} /> */}
+          <Route path={ROUTES.USERS} element={<UserManagementPage />} />
+          <Route path={ROUTES.TENANT} element={<TenantManagementPage />} />
+          <Route path={ROUTES.PROFILE} element={<ProfilePage defaultTab="profile" />} />
+          <Route path={ROUTES.CHANGE_PASSWORD} element={<ProfilePage defaultTab="password" />} />
           <Route path={ROUTES.DOCS} element={<DocumentationPage />} />
         </Route>
 

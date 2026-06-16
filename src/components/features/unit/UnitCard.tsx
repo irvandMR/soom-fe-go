@@ -1,7 +1,7 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { type Unit } from "./useUnitQuery";
+import type { Unit } from "@/types/unit.type";
 
 interface UnitCardProps {
   data: Unit;
@@ -19,23 +19,23 @@ export default function UnitCard({ data, onEdit, onDelete }: UnitCardProps) {
             {/* Badge simbol */}
             <div className="w-10 h-10 rounded-lg bg-[var(--fandm-bg)] border border-[var(--fandm-border)] flex items-center justify-center shrink-0">
               <span className="text-sm font-mono font-semibold text-[var(--fandm-text)]">
-                {data.Symbol}
+                {data.symbol}
               </span>
             </div>
 
             {/* Nama + tanggal */}
-            <div className="min-w-0">
+            {/* <div className="min-w-0">
               <p className="text-sm font-medium text-[var(--fandm-text)] truncate">
-                {data.Name}
+                {data.name}
               </p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {new Date(data.CreatedAt).toLocaleDateString("id-ID", {
+                {new Date(data.).toLocaleDateString("id-ID", {
                   day: "2-digit",
                   month: "short",
                   year: "numeric",
                 })}
               </p>
-            </div>
+            </div> */}
           </div>
 
           {/* Kanan: aksi */}

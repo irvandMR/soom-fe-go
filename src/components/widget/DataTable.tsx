@@ -42,11 +42,11 @@ function SortIcon({
   sort?: SortState | null;
 }) {
   if (!sort || sort.key !== columnKey)
-    return <ChevronsUpDown size={11} className="text-muted-foreground/40" />;
+    return <ChevronsUpDown size={11} className="text-white/40" />;
   return sort.dir === "asc" ? (
-    <ChevronUp size={11} className="text-[var(--fandm-primary)]" />
+    <ChevronUp size={11} className="text-white" />
   ) : (
-    <ChevronDown size={11} className="text-[var(--fandm-primary)]" />
+    <ChevronDown size={11} className="text-white" />
   );
 }
 
@@ -65,18 +65,18 @@ export default function DataTable<T = Record<string, unknown>>({
     <div className="rounded-lg border border-[var(--fandm-border)] overflow-hidden bg-white">
       <Table>
         <TableHeader>
-          <TableRow className="bg-[var(--fandm-primary)] hover:bg-[var(--fandm-primary-light)]">
+          <TableRow className="bg-[var(--fandm-primary)] hover:!bg-[var(--fandm-primary-dark)] transition-colors duration-150">
             {columns.map((col) => (
               <TableHead
                 key={col.key}
                 style={{ width: col.width }}
                 onClick={() => col.sortable && onSort?.(col.key)}
                 className={cn(
-                  "text-[11px] text-[var(--fandm-text-secondary)] font-semibold uppercase tracking-wide  whitespace-nowrap",
+                  "text-[11px] text-[var(--fandm-text-secondary)] font-semibold uppercase tracking-wide whitespace-nowrap transition-colors duration-150",
                   col.align === "center" && "text-center",
                   col.align === "right" && "text-right",
                   col.sortable &&
-                    "cursor-pointer select-none hover:text-[var(--fandm-text)] transition-colors",
+                    "cursor-pointer select-none hover:text-white hover:!bg-white/10",
                 )}
               >
                 <div

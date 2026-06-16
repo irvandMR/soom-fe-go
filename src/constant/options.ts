@@ -4,3 +4,8 @@ export const BASE_UNIT = [
   { label: "Pcs", value: "pcs" },
   { label: "Meter", value: "m" },
 ];
+
+export const status = [
+  { label: "Aktif", value: true },
+  { label: "Tidak Aktif", value: false },
+];

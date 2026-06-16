@@ -11,6 +11,7 @@ import {
   LogOut,
   Menu,
   User,
+  Store,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -22,6 +23,8 @@ import {
 } from "../ui/dropdown-menu";
 import { ROUTES } from "@/constant/routes";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useActiveTenantStore, TENANT_OPTIONS } from "@/store/useActiveTenantStore";
+import { toast } from "sonner";
 
 interface TopbarProps {
   breadcrumb: string[];
@@ -31,7 +34,8 @@ export default function Topbar({ breadcrumb }: TopbarProps) {
   const { collapsed, toggle } = useSidebarStore();
   const { isMobile } = useBreakpoint();
   const { user, clearAuth } = useAuthStore();
-  // const user = { role: "admin", username: "Rizky", email: "rizky@gmail.com" };
+  const { activeTenantId, setActiveTenantId } = useActiveTenantStore();
+  const activeTenant = TENANT_OPTIONS.find(t => t.id === activeTenantId);
 
   const navigate = useNavigate();
 
@@ -90,6 +94,48 @@ export default function Topbar({ breadcrumb }: TopbarProps) {
             <CalendarIcon size={14} className="text-slate-500" />
             Hari ini
             <ChevronDown size={12} className="text-slate-400 ml-1" />
+          </div>
+        )}
+
+        {/* Tenant Switcher Dropdown */}
+        {user?.role === "superadmin" ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="flex items-center gap-1.5 px-2.5 py-1.5 border border-[var(--fandm-border)] bg-white hover:bg-slate-50 transition-colors rounded-md text-xs font-semibold text-slate-700 cursor-pointer shadow-xs">
+                <Store size={13} className="text-indigo-600 shrink-0" />
+                <span>{activeTenant?.name ?? "Pilih Tenant"}</span>
+                <ChevronDown size={12} className="text-slate-400 ml-0.5" />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 p-1 border-[var(--fandm-border)] rounded-xl shadow-lg mt-1">
+              <DropdownMenuLabel className="p-2.5 pb-1.5 border-b border-[var(--fandm-border)] mb-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                Pilih Cabang / Tenant
+              </DropdownMenuLabel>
+              {TENANT_OPTIONS.map((t) => (
+                <DropdownMenuItem
+                  key={t.id}
+                  onClick={() => {
+                    setActiveTenantId(t.id);
+                    toast.success(`Cabang aktif dialihkan ke: ${t.name}`);
+                  }}
+                  className={cn(
+                    "text-xs py-2 px-2.5 cursor-pointer rounded-md flex items-center justify-between",
+                    activeTenantId === t.id ? "bg-indigo-50 text-indigo-700 font-bold" : "text-slate-700"
+                  )}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className={cn("h-1.5 w-1.5 rounded-full", t.is_active ? "bg-green-500 animate-pulse" : "bg-slate-300")} />
+                    <span>{t.name}</span>
+                  </div>
+                  <span className="font-mono text-[9px] text-slate-400">{t.code}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 border border-[var(--fandm-border)] bg-slate-50 rounded-md text-xs font-semibold text-slate-500 cursor-default shadow-xs">
+            <Store size={13} className="text-slate-400 shrink-0" />
+            <span>{activeTenant?.name ?? "Pilih Tenant"}</span>
           </div>
         )}
 

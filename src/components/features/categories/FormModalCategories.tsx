@@ -39,7 +39,6 @@ export default function FormModalCategories({
     register,
     handleSubmit,
     watch,
-    setValue,
     reset,
     control,
     formState: { errors },
@@ -102,7 +101,7 @@ export default function FormModalCategories({
 
   const handleEdit = (payload: any) => {
     confirm({
-      title: `Simpan perubahan katageri "${editData?.Name}"?`,
+      title: `Simpan perubahan katagori "${editData?.Name}"?`,
       description: "Pastikan data katageri sudah benar.",
       confirmLabel: "Ya, Simpan",
       variant: "default",

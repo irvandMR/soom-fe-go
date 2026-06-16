@@ -1,21 +1,22 @@
 import { useDataQuery } from "@/hooks/useDataQuery";
-
-export interface Unit {
-  Id: string;
-  Name: string;
-  Code: string;
-  Symbol: string;
-  HaveConversion: boolean;
-  BaseUnit: string;
-  ConversionFactor: number;
-  CreatedAt: string;
-  UpdatedAt: string;
-}
+import { unitService } from "@/service/unit.service";
+import type { Unit } from "@/types/unit.type";
+import { useQuery } from "@tanstack/react-query";
 
 export function useUnitQuery() {
   return useDataQuery<Unit>({
     url: "/uoms",
     queryKey: "units",
     pageSize: 10,
+  });
+}
+
+export function useGetUnitAll() {
+  return useQuery({
+    queryKey: ["unit-all"],
+    queryFn: async () => {
+      const res = await unitService.getAll();
+      return res.data.result;
+    },
   });
 }

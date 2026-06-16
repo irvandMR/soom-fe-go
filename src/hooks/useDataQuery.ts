@@ -21,6 +21,7 @@ export interface DataQueryResult<T> {
   meta: DataMeta | undefined
   isLoading: boolean
   isError: boolean
+  refetch: () => void
   search: string
   setSearch: (val: string) => void
   sort: SortState | null
@@ -84,7 +85,7 @@ export function useDataQuery<T = Record<string, unknown>>({
 
   const resetFilters = () => { setActiveFilters({}); setPage(1) }
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: [queryKey, page, pageSize, debouncedSearch, sort, activeFilters, extraParams],
     queryFn: async () => {
       const params = {
@@ -110,6 +111,7 @@ export function useDataQuery<T = Record<string, unknown>>({
     },
     isLoading,
     isError,
+    refetch,
     search,
     setSearch,
     sort,

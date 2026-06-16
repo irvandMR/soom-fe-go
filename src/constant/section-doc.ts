@@ -4,7 +4,7 @@ import {
 	Factory,
 	Package,
 	ShoppingCart,
-	Tag,
+	LayoutDashboard,
 	type LucideIcon,
 } from "lucide-react";
 
@@ -14,177 +14,160 @@ interface Section {
 	icon: LucideIcon;
 	color: string;
 	bg: string;
+	pathPattern?: string; // To match the help context dynamically
 	steps: { title: string; desc: string }[];
 }
 
 export const SECTIONDOCS: Section[] = [
 	{
 		id: 1,
-		title: "Cara Input Kategori",
-		icon: Tag,
+		title: "Dashboard & Analitik",
+		icon: LayoutDashboard,
 		color: "#1565A0",
 		bg: "#E3F2FB",
+		pathPattern: "/dashboard",
 		steps: [
 			{
-				title: "Buka menu Kategori",
-				desc: "Dari sidebar, klik Settings → Kategori. Halaman daftar kategori akan tampil.",
+				title: "Ringkasan Indikator Utama",
+				desc: "Memantau Total Pesanan, Omset/Pendapatan, Jumlah Transaksi Lunas, dan Uang Muka (DP) secara realtime.",
 			},
 			{
-				title: "Klik tombol Tambah Kategori",
-				desc: 'Klik tombol "+ Tambah" di pojok kanan atas untuk membuka form kategori.',
+				title: "Rencana Restock Bahan",
+				desc: "Membaca estimasi belanja bahan baku yang dihitung otomatis dari sisa stok bahan baku yang berada di bawah batas aman minimum.",
 			},
 			{
-				title: "Isi nama kategori",
-				desc: 'Masukkan nama kategori produk, misalnya: "Roti", "Kue Kering", "Minuman". Nama harus unik.',
+				title: "Tren Aliran Kas Mingguan",
+				desc: "Membaca grafik visual mingguan (Area Chart) untuk memantau perbandingan pemasukan vs pengeluaran secara cepat.",
 			},
 			{
-				title: "Simpan",
-				desc: "Klik tombol Simpan. Kategori baru akan langsung muncul di daftar dan siap digunakan saat input produk.",
+				title: "Evaluator Margin Kritis",
+				desc: "Memantau daftar produk dengan keuntungan tipis (margin < 40%) agar Anda bisa segera memperbarui harga jual atau komposisi resep di halaman Produk.",
 			},
 		],
 	},
 	{
 		id: 2,
-		title: "Cara Input Bahan Baku",
-		icon: Package,
-		color: "#2E7D32",
-		bg: "#E8F5E9",
+		title: "Transaksi & Pemantauan",
+		icon: ShoppingCart,
+		color: "#0D9488",
+		bg: "#F0FDFA",
+		pathPattern: "/orders",
 		steps: [
 			{
-				title: "Buka menu Stok Bahan Baku",
-				desc: "Dari sidebar, klik Stok Bahan Baku. Halaman daftar bahan baku akan tampil.",
+				title: "Monitoring Ritel POS",
+				desc: "Memantau semua nota penjualan dari kasir outlet aktif secara realtime. Halaman ini bersifat read-only (hanya baca) karena sinkronisasi POS luar.",
 			},
 			{
-				title: "Klik tombol Tambah Bahan",
-				desc: 'Klik "+ Tambah Bahan Baku" untuk membuka form input bahan.',
+				title: "Status Bayar (DP vs Lunas)",
+				desc: "Membaca status Lunas (telah bayar penuh) atau DP (Uang Muka) beserta nominal uang muka yang telah disetorkan pelanggan.",
 			},
 			{
-				title: "Isi detail bahan baku",
-				desc: "Masukkan: nama bahan (mis. Tepung Terigu), satuan (kg, gram, liter), stok awal, dan batas minimum stok untuk notifikasi kritis.",
+				title: "Rincian & Sisa Pembayaran",
+				desc: "Membuka detail transaksi untuk melihat rincian item belanja, metode pembayaran, catatan pelanggan, dan sisa pembayaran (Total Tagihan dikurangi DP).",
 			},
 			{
-				title: "Simpan bahan",
-				desc: "Klik Simpan. Bahan akan masuk ke inventori dan stoknya bisa diupdate setiap kali ada pembelian.",
-			},
-			{
-				title: "Update stok",
-				desc: "Untuk update stok, klik ikon edit pada bahan, ubah jumlah stok sesuai kondisi gudang, lalu simpan.",
+				title: "Filter Tanggal & Ekspor",
+				desc: "Memfilter data berdasarkan nama pelanggan, nomor invoice, rentang tanggal masuk, status pembayaran, dan mengekspor rekap penjualan.",
 			},
 		],
 	},
 	{
 		id: 3,
-		title: "Produk & Resep",
-		icon: Archive,
-		color: "#6A1B9A",
-		bg: "#F3E5F5",
+		title: "Bahan Baku & Kemasan",
+		icon: Package,
+		color: "#2E7D32",
+		bg: "#E8F5E9",
+		pathPattern: "/ingredients",
 		steps: [
 			{
-				title: "Buka menu Produk & Resep",
-				desc: "Klik Produk & Resep dari sidebar untuk melihat daftar semua produk.",
+				title: "Tab Bahan vs Kemasan",
+				desc: "Gunakan sub-tab 'Bahan Baku' untuk bahan dasar makanan/adonan dan 'Kemasan & Wadah' untuk kotak dus, stiker, atau plastik packing.",
 			},
 			{
-				title: "Tambah produk baru",
-				desc: 'Klik "+ Tambah Produk". Isi nama produk, kategori (yang sudah dibuat sebelumnya), harga jual, dan deskripsi singkat.',
+				title: "Tambah Bahan Baru",
+				desc: "Mendaftarkan bahan baku atau kemasan baru dengan menentukan satuan dasar (gr, ml, pcs) serta batas aman minimum stok untuk memicu notifikasi kritis.",
 			},
 			{
-				title: "Tambah resep produk",
-				desc: "Setelah produk tersimpan, klik tab Resep. Tambahkan setiap bahan baku yang digunakan beserta jumlahnya per batch produksi.",
+				title: "Stok Masuk (Restock Gudang)",
+				desc: "Menambahkan kuantitas stok bahan dengan memasukkan harga beli satuan terbaru. Harga beli ini akan menjadi acuan perhitungan HPP produk.",
 			},
 			{
-				title: "Versi resep",
-				desc: "Sistem menyimpan versi resep otomatis. Jika resep diubah, versi lama tetap tersimpan untuk referensi produksi sebelumnya.",
-			},
-			{
-				title: "Harga pokok produksi",
-				desc: "Sistem akan menghitung otomatis HPP berdasarkan bahan baku yang digunakan dan harga belinya.",
+				title: "Notifikasi Stok Menipis",
+				desc: "Sistem menandai stok di bawah batas aman dengan warna merah/kuning untuk membantu Anda memesan ulang sebelum kehabisan bahan.",
 			},
 		],
 	},
 	{
 		id: 4,
-		title: "Produksi",
-		icon: Factory,
-		color: "#E65100",
-		bg: "#FFF8E1",
+		title: "Produk & Manajemen Resep",
+		icon: Archive,
+		color: "#6A1B9A",
+		bg: "#F3E5F5",
+		pathPattern: "/products",
 		steps: [
 			{
-				title: "Buka menu Produksi",
-				desc: "Klik Produksi dari sidebar. Halaman ini menampilkan riwayat dan jadwal produksi.",
+				title: "Tipe Produk",
+				desc: "Pilih tipe saat membuat produk: 'Made to Stock' (dibuat massal/ready di rak), 'Made to Order' (inden/pesanan khusus), atau 'Resell' (barang beli jadi seperti minuman kemasan).",
 			},
 			{
-				title: "Buat produksi baru",
-				desc: 'Klik "+ Buat Produksi". Pilih produk yang akan diproduksi dan jumlah batch (porsi).',
+				title: "Komposisi Resep & Konversi UOM",
+				desc: "Memasukkan takaran bahan baku per batch adonan. Sistem otomatis mengonversi satuan (misal bahan dibeli dalam kg, tapi resep ditulis dalam gram).",
 			},
 			{
-				title: "Verifikasi stok bahan",
-				desc: "Sistem akan otomatis menghitung kebutuhan bahan berdasarkan resep. Pastikan stok mencukupi sebelum lanjut.",
+				title: "Penyusunan HPP Kemasan",
+				desc: "Masukkan bahan pembantu/kemasan di tab kemasan (misal stiker & plastik per unit produk jadi) untuk memecah hitungan HPP bahan vs kemasan.",
 			},
 			{
-				title: "Mulai produksi",
-				desc: 'Klik Mulai Produksi. Status akan berubah menjadi "Proses". Stok bahan baku akan langsung terpotong otomatis.',
-			},
-			{
-				title: "Selesaikan produksi",
-				desc: "Setelah produksi selesai, klik Selesai dan masukkan jumlah aktual yang berhasil diproduksi. Sistem akan catat tanggal kedaluwarsa.",
+				title: "Aktivasi Versi Resep & Final HPP",
+				desc: "Sistem mencatat resep secara versi (v1, v2). Aktifkan versi resep yang diinginkan untuk memperbarui nilai Harga Pokok Produksi secara instan.",
 			},
 		],
 	},
 	{
 		id: 5,
-		title: "Order",
-		icon: ShoppingCart,
-		color: "#1565A0",
-		bg: "#E3F2FB",
+		title: "Pencatatan Produksi & QC",
+		icon: Factory,
+		color: "#E65100",
+		bg: "#FFE0B2",
+		pathPattern: "/productions",
 		steps: [
 			{
-				title: "Buka menu Order",
-				desc: "Klik Order dari sidebar. Daftar semua order aktif dan riwayat akan tampil.",
+				title: "Buat Produksi Baru",
+				desc: "Memulai proses produksi dengan memilih produk, memilih versi resep aktif, dan memasukkan target jumlah porsi/batch. Stok bahan baku adonan otomatis terpotong.",
 			},
 			{
-				title: "Buat order baru",
-				desc: 'Klik "+ Buat Order". Masukkan nama pelanggan, nomor kontak, dan tanggal pengiriman yang diinginkan.',
+				title: "Quality Control (Ok vs Reject)",
+				desc: "Setelah produksi selesai, masukkan jumlah aktual sukses (lolos QC) dan jumlah gagal (reject/waste). Status batch berubah menjadi sukses, sukses dengan reject, atau gagal total.",
 			},
 			{
-				title: "Tambah item order",
-				desc: "Pilih produk dari dropdown, masukkan jumlah. Harga akan otomatis terisi dari data produk. Bisa tambah beberapa item sekaligus.",
+				title: "Biaya Overhead & Rekomendasi Harga",
+				desc: "Sistem otomatis mengalokasikan 20% biaya overhead operasional di atas HPP dasar, lalu merekomendasikan harga jual eceran terbaik untuk margin keuntungan 60%.",
 			},
 			{
-				title: "Konfirmasi & proses",
-				desc: "Setelah semua item ditambahkan, klik Konfirmasi. Status order berubah dari Pending → Proses.",
-			},
-			{
-				title: "Tandai selesai",
-				desc: "Saat order sudah disiapkan dan diserahkan ke pelanggan, klik Selesai. Data pemasukan akan tercatat otomatis ke modul Keuangan.",
+				title: "Potensi Pendapatan Ritel",
+				desc: "Memantau total potensi omset penjualan dari batch produksi yang sukses lolos QC berdasarkan rekomendasi harga jual pasar.",
 			},
 		],
 	},
 	{
 		id: 6,
-		title: "Keuangan",
+		title: "Manajemen Keuangan",
 		icon: Banknote,
-		color: "#2E7D32",
-		bg: "#E8F5E9",
+		color: "#374151",
+		bg: "#F3F4F6",
+		pathPattern: "/cash-flow",
 		steps: [
 			{
-				title: "Buka menu Keuangan",
-				desc: "Klik Keuangan dari sidebar untuk melihat ringkasan pemasukan dan pengeluaran.",
+				title: "Pemasukan Otomatis POS",
+				desc: "Setiap transaksi eceran yang selesai dari kasir outlet otomatis tercatat sebagai pemasukan keuangan. Tidak perlu diinput ulang secara manual.",
 			},
 			{
-				title: "Pemasukan otomatis",
-				desc: "Setiap order yang diselesaikan akan otomatis tercatat sebagai pemasukan. Tidak perlu input manual.",
+				title: "Catat Pengeluaran Operasional",
+				desc: "Gunakan tombol Tambah Pengeluaran untuk mencatat biaya di luar pembelian bahan baku, seperti sewa outlet, listrik, air, atau gaji staf.",
 			},
 			{
-				title: "Catat pengeluaran",
-				desc: 'Untuk pengeluaran seperti pembelian bahan baku, klik "+ Tambah Pengeluaran". Masukkan nominal, kategori, dan deskripsi.',
-			},
-			{
-				title: "Laporan harian/bulanan",
-				desc: "Gunakan filter tanggal untuk melihat laporan per periode. Grafik akan menampilkan tren pemasukan vs pengeluaran.",
-			},
-			{
-				title: "Export laporan",
-				desc: "Klik Export untuk mengunduh laporan dalam format Excel atau PDF untuk keperluan pembukuan.",
+				title: "Grafik Aliran Kas",
+				desc: "Menganalisis pergerakan kas bulanan untuk memantau laba bersih (pemasukan dikurangi pengeluaran operasional).",
 			},
 		],
 	},

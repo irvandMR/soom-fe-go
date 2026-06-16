@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { unitSchema, type UnitFormData } from "./unitSchema";
 import { useCreateUnit, useUpdateUnit } from "./useUnitMutation";
-import { type Unit } from "./useUnitQuery";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { confirm } from "@/store/useConfirmStore";
 import { BASE_UNIT } from "@/constant/options";
+import type { Unit } from "@/types/unit.type";
 
 interface FormModalUnitProps {
   open: boolean;
@@ -65,12 +65,12 @@ export default function FormModalUnit({
     if (open) {
       if (editData) {
         reset({
-          code: editData.Code ?? "",
-          name: editData.Name ?? "",
-          symbol: editData.Symbol ?? "",
-          have_conversion: editData.HaveConversion ?? false,
-          base_unit: editData.BaseUnit ?? "",
-          conversion_factor: editData.ConversionFactor ?? undefined,
+          code: editData.code ?? "",
+          name: editData.name ?? "",
+          symbol: editData.symbol ?? "",
+          have_conversion: editData.have_conversion ?? false,
+          base_unit: editData.base_unit ?? "",
+          conversion_factor: editData.conversion_factor ?? undefined,
         });
       } else {
         reset({
@@ -104,7 +104,7 @@ export default function FormModalUnit({
     if (isEdit) {
       const payloadEdit = {
         ...payload,
-        id: editData.Id,
+        id: editData.id,
       };
 
       handleEdit(payloadEdit);
@@ -115,7 +115,7 @@ export default function FormModalUnit({
 
   const handleEdit = (payload: any) => {
     confirm({
-      title: `Simpan perubahan unit "${editData?.Name}"?`,
+      title: `Simpan perubahan unit "${editData?.name}"?`,
       description: "Pastikan data konversi dan nama unit sudah benar.",
       confirmLabel: "Ya, Simpan",
       variant: "default",

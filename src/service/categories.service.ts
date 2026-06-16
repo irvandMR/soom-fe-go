@@ -24,4 +24,8 @@ export const categoriesService = {
   getType: () => {
     return api.get("/categories/types");
   },
+
+  getAll: () => {
+    return api.get("/categories/all");
+  },
 };

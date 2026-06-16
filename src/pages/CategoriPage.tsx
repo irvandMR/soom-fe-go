@@ -1,11 +1,13 @@
 import BannerBackground from "@/components/common/BannerBackground";
+import CategoriesCard from "@/components/features/categories/categoriesCard";
 import CategoriesTable from "@/components/features/categories/CategoriesTable";
 import FormModalCategories from "@/components/features/categories/FormModalCategories";
+import { useDeleteCategories } from "@/components/features/categories/useCategoriesMutation";
 import {
-  useDeleteCategories,
+  useCategoriesQuery,
   useGetCategoriesType,
-} from "@/components/features/categories/useCategoriesMutation";
-import { useCategoriesQuery } from "@/components/features/categories/useCategoriesQuery";
+} from "@/components/features/categories/useCategoriesQuery";
+import CardList from "@/components/widget/CardList";
 import FilterBar from "@/components/widget/FilterBar";
 import PageHeader from "@/components/widget/PageHeader";
 import Pagination from "@/components/widget/Pagination";
@@ -14,6 +16,8 @@ import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { confirm } from "@/store/useConfirmStore";
 import type { Categories } from "@/types/categories.type";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { RefreshCw } from "lucide-react";
 
 export default function CategoriPage() {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -27,6 +31,7 @@ export default function CategoriPage() {
     meta,
     isLoading,
     isError,
+    refetch,
     search,
     setSearch,
     sort,
@@ -47,7 +52,7 @@ export default function CategoriPage() {
 
   const filterOptions = [
     {
-      key: "ype",
+      key: "type",
       label: "Tipe",
       options: typeOption,
     },
@@ -65,7 +70,7 @@ export default function CategoriPage() {
 
   const handleDelete = (categories: Categories) => {
     confirm({
-      title: `Hapus unit "${categories.Name}"?`,
+      title: `Hapus kategori "${categories.Name}"?`,
       description: "Data yang dihapus tidak bisa dikembalikan.",
       confirmLabel: "Ya, hapus",
       variant: "danger",
@@ -91,13 +96,23 @@ export default function CategoriPage() {
         className="flex flex-col gap-2 p-3 rounded-lg border"
       >
         {/* Toolbar Row */}
-        <div className="flex items-center  gap-3 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
           <SearchInput
             value={search}
             onChange={setSearch}
-            placeholder="Cari nama unit atau simbol..."
+            placeholder="Cari nama kategori..."
             className="w-full sm:max-w-sm"
           />
+
+          <Button
+            variant="outline-secondary"
+            size="icon"
+            className="h-9 w-9 shrink-0"
+            onClick={() => refetch()}
+            title="Refresh data"
+          >
+            <RefreshCw size={13} className="text-white" />
+          </Button>
 
           <FilterBar
             filters={filterOptions}
@@ -119,16 +134,33 @@ export default function CategoriPage() {
         />
       )}
 
-      <CategoriesTable
-        rows={rows}
-        isLoading={isLoading}
-        isError={isError}
-        sort={sort}
-        onSort={setSort}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        emptyMessage={emptyMessage}
-      />
+      {isMobile ? (
+        <CardList<Categories>
+          rows={rows}
+          isLoading={isLoading}
+          isError={isError}
+          emptyMessage={emptyMessage}
+          renderItem={(categories) => (
+            <CategoriesCard
+              key={categories.Id}
+              data={categories}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          )}
+        />
+      ) : (
+        <CategoriesTable
+          rows={rows}
+          isLoading={isLoading}
+          isError={isError}
+          sort={sort}
+          onSort={setSort}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          emptyMessage={emptyMessage}
+        />
+      )}
 
       <FormModalCategories
         open={showAddModal}

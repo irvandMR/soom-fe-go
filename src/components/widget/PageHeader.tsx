@@ -7,6 +7,7 @@ interface PageHeaderProps {
 	subtitle?: string;
 	actionLabel?: string;
 	onAction?: () => void;
+	extraActions?: React.ReactNode;
 }
 
 export default function PageHeader({
@@ -14,6 +15,7 @@ export default function PageHeader({
 	actionLabel,
 	onAction,
 	subtitle,
+	extraActions,
 }: PageHeaderProps) {
 	const { isMobile } = useBreakpoint();
 
@@ -31,12 +33,15 @@ export default function PageHeader({
 				)}
 			</div>
 
-			{actionLabel && onAction && (
-				<Button onClick={onAction}>
-					<Plus size={14} />
-					{!isMobile && actionLabel}
-				</Button>
-			)}
+			<div className="flex items-center gap-2">
+				{extraActions}
+				{actionLabel && onAction && (
+					<Button onClick={onAction}>
+						<Plus size={14} />
+						{!isMobile && actionLabel}
+					</Button>
+				)}
+			</div>
 		</div>
 	);
 }

@@ -29,4 +29,8 @@ export const unitService = {
   delete: (id: string) => {
     return api.delete(`/uoms/${id}`);
   },
+
+  getAll: () => {
+    return api.get("/uoms/all");
+  },
 };

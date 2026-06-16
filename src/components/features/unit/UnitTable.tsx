@@ -1,15 +1,8 @@
 import { CircleCheck, CircleX, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import DataTable, { type ColumnDef } from "@/components/widget/DataTable";
 import { type SortState } from "@/hooks/useDataQuery";
-import { type Unit } from "./useUnitQuery";
-import { MoreHorizontal } from "lucide-react";
+import type { Unit } from "@/types/unit.type";
 
 interface UnitTableProps {
   rows: Unit[];
@@ -27,17 +20,17 @@ const columns = (
   onDelete: (unit: Unit) => void,
 ): ColumnDef<Unit>[] => [
   {
-    key: "Code",
+    key: "code",
     label: "Kode Unit",
     sortable: true,
   },
   {
-    key: "Name",
+    key: "name",
     label: "Nama Unit",
     sortable: true,
   },
   {
-    key: "Symbol",
+    key: "symbol",
     label: "Simbol",
     width: "120px",
     align: "center",
@@ -47,18 +40,8 @@ const columns = (
       </span>
     ),
   },
-  // {
-  //   key: "CreatedAt",
-  //   label: "Dibuat",
-  //   render: (val) =>
-  //     new Date(String(val)).toLocaleDateString("id-ID", {
-  //       day: "2-digit",
-  //       month: "short",
-  //       year: "numeric",
-  //     }),
-  // },
   {
-    key: "HaveConversion",
+    key: "have_conversion",
     label: "Memiliki Konversi",
     sortable: true,
     render: (val) =>
@@ -73,17 +56,17 @@ const columns = (
       ),
   },
   {
-    key: "ConversionFactor",
+    key: "conversion_factor",
     label: "Faktor Konversi",
     sortable: true,
   },
   {
-    key: "BaseUnit",
+    key: "base_unit",
     label: "Unit Dasar",
     sortable: true,
   },
   {
-    key: "Id",
+    key: "id",
     label: "Aksi",
     width: "60px",
     align: "center",

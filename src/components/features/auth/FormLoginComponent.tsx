@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Navigate, data } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,7 +39,16 @@ function LoginForm() {
     try {
       const res = await authService.login(data);
       const { access_token, username, email, role } = res.data.result;
-      setAuth(access_token, { id: "", username, email, role });
+      
+      const DUMMY_EMAIL_TENANT_MAP: Record<string, string> = {
+        "irvandi@soom.com": "ten-1",
+        "budi.kasir@soom.com": "ten-1",
+        "siti.staff@soom.com": "ten-2",
+        "andi@soom.com": "ten-3",
+      };
+      const tenantId = DUMMY_EMAIL_TENANT_MAP[email] || res.data.result.tenantId || res.data.result.tenant_id || "ten-1";
+
+      setAuth(access_token, { id: res.data.result.id || "", username, email, role, tenantId });
       navigate(ROUTES.DASHBOARD, { replace: true });
     } catch {
       setError("root", { message: "Email atau password salah." });

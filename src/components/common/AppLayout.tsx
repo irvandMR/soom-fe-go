@@ -8,25 +8,58 @@ import Topbar from "./Topbar";
 import { Toaster } from "sonner";
 import OverlayLoading from "./OverlayLoading";
 import ConfirmDialog from "./ConfirmDialog";
+import HelpGuide from "./HelpGuide";
 
-function AppLayout() {
+// Komponen terpisah agar perubahan `collapsed` tidak menyebabkan
+// AnimatePresence/Outlet ikut re-render (terutama di mobile)
+function MainArea({ breadcrumb }: { breadcrumb: string[] }) {
   const { collapsed } = useSidebarStore();
   const { isMobile } = useBreakpoint();
   const location = useLocation();
 
-  const breadcrumb = BREADCRUMBMAP[location.pathname] ?? ["Main Menu"];
-
-  // Sidebar width: mobile tidak pakai margin (overlay), desktop pakai margin
   const sidebarWidth = isMobile ? 0 : collapsed ? 60 : 220;
+
   const pageVariants = {
     initial: { opacity: 0, y: 8 },
     animate: { opacity: 1, y: 0 },
     exit: { opacity: 0, y: -6 },
   };
+
+  return (
+    <div
+      className="flex flex-col flex-1 h-screen overflow-hidden transition-[margin] duration-200 ease-in-out"
+      style={{ marginLeft: sidebarWidth }}
+    >
+      <Topbar breadcrumb={breadcrumb} />
+
+      <main className="flex-1 overflow-y-auto mt-14 bg-gray-50">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className="p-4 lg:p-6 min-h-full"
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
+      </main>
+    </div>
+  );
+}
+
+function AppLayout() {
+  const location = useLocation();
+  const breadcrumb = BREADCRUMBMAP[location.pathname] ?? ["Main Menu"];
+
   return (
     <>
       <OverlayLoading />
       <ConfirmDialog />
+      <HelpGuide />
       <Toaster
         position="bottom-right"
         richColors
@@ -46,30 +79,7 @@ function AppLayout() {
       />
       <div className="flex h-screen overflow-hidden bg-gray-50 text-left">
         <Sidebar />
-
-        {/* Main area — geser kanan sesuai lebar sidebar */}
-        <div
-          className="flex flex-col flex-1 h-screen overflow-hidden transition-[margin] duration-200 ease-in-out"
-          style={{ marginLeft: sidebarWidth }}
-        >
-          <Topbar breadcrumb={breadcrumb} />
-
-          <main className="flex-1 overflow-y-auto mt-14 bg-gray-50">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={location.pathname}
-                variants={pageVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={{ duration: 0.18, ease: "easeOut" }}
-                className="p-4 lg:p-6 min-h-full"
-              >
-                <Outlet />
-              </motion.div>
-            </AnimatePresence>
-          </main>
-        </div>
+        <MainArea breadcrumb={breadcrumb} />
       </div>
     </>
   );

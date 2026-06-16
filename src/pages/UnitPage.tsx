@@ -1,13 +1,9 @@
 import { useState } from "react";
 import PageHeader from "@/components/widget/PageHeader";
 import SearchInput from "@/components/widget/SearchInput";
-import DataTable from "@/components/widget/DataTable";
 // import CardList from '@/components/widget/CardList'
 import Pagination from "@/components/widget/Pagination";
-import {
-  useUnitQuery,
-  type Unit,
-} from "@/components/features/unit/useUnitQuery";
+import { useUnitQuery } from "@/components/features/unit/useUnitQuery";
 import UnitTable from "@/components/features/unit/UnitTable";
 import UnitCard from "@/components/features/unit/UnitCard";
 import CardList from "@/components/widget/CardList";
@@ -18,6 +14,9 @@ import FormModalUnit from "@/components/features/unit/FormModalUnit";
 import { confirm } from "@/store/useConfirmStore";
 import { useDeleteUnit } from "@/components/features/unit/useUnitMutation";
 import { BASE_UNIT } from "@/constant/options";
+import type { Unit } from "@/types/unit.type";
+import { Button } from "@/components/ui/button";
+import { RefreshCw } from "lucide-react";
 
 export default function UnitPage() {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -29,6 +28,7 @@ export default function UnitPage() {
     meta,
     isLoading,
     isError,
+    refetch,
     search,
     setSearch,
     sort,
@@ -57,11 +57,11 @@ export default function UnitPage() {
 
   const handleDelete = (unit: Unit) => {
     confirm({
-      title: `Hapus unit "${unit.Name}"?`,
+      title: `Hapus unit "${unit.name}"?`,
       description: "Data yang dihapus tidak bisa dikembalikan.",
       confirmLabel: "Ya, hapus",
       variant: "danger",
-      onConfirm: () => deleteMutation.mutate(unit.Id),
+      onConfirm: () => deleteMutation.mutate(unit.id),
     });
   };
 
@@ -88,13 +88,23 @@ export default function UnitPage() {
         className="flex flex-col gap-2 p-3 rounded-lg border"
       >
         {/* Toolbar Row */}
-        <div className="flex items-center  gap-3 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
           <SearchInput
             value={search}
             onChange={setSearch}
             placeholder="Cari nama unit atau simbol..."
             className="w-full sm:max-w-sm"
           />
+
+          <Button
+            variant="outline-secondary"
+            size="icon"
+            className="h-9 w-9 shrink-0"
+            onClick={() => refetch()}
+            title="Refresh data"
+          >
+            <RefreshCw size={13} className="text-white" />
+          </Button>
 
           <FilterBar
             filters={filterOptions}
@@ -124,7 +134,7 @@ export default function UnitPage() {
           emptyMessage={emptyMessage}
           renderItem={(unit) => (
             <UnitCard
-              key={unit.Id}
+              key={unit.id}
               data={unit}
               onEdit={handleEdit}
               onDelete={handleDelete}

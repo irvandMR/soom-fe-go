@@ -1,10 +1,9 @@
 import { categoriesService } from "@/service/categories.service";
 import type {
-  Categories,
   CreateCategoriesPayload,
   UpdateCategoriesPaylaod,
 } from "@/types/categories.type";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 interface UseMutationOptions {
@@ -62,17 +61,6 @@ export function useDeleteCategories() {
     },
     onError: () => {
       toast.error("Gagal menghapus kategori");
-    },
-  });
-}
-
-export function useGetCategoriesType() {
-  return useQuery({
-    queryKey: ["categories-type"],
-    queryFn: async () => {
-      const res = await categoriesService.getType();
-
-      return res.data.result;
     },
   });
 }

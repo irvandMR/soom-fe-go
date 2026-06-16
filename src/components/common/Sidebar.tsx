@@ -67,9 +67,18 @@ function SidebarContent({
       .join("")
       .toUpperCase() ?? "U";
 
-  const filtered = MENUS.filter(
-    (g) => g.permission === "all" || g.permission === role,
-  );
+  const filtered = MENUS.map((group) => {
+    const items = group.items.filter((item) => {
+      if (item.path === ROUTES.TENANT) {
+        return role === "superadmin";
+      }
+      if (item.path === ROUTES.USERS) {
+        return role === "superadmin" || role === "owner";
+      }
+      return true;
+    });
+    return { ...group, items };
+  }).filter((group) => group.items.length > 0);
 
   return (
     <>
@@ -152,17 +161,19 @@ function SidebarContent({
 
 // ─── Sidebar Shell ────────────────────────────────────────────────────────────
 export default function Sidebar() {
-  const { collapsed, toggle } = useSidebarStore();
+  const { collapsed, toggle, setCollapsed } = useSidebarStore();
   const { isMobile } = useBreakpoint();
 
   // ── Mobile: overlay drawer ─────────────────────────────────────────────────
   if (isMobile) {
+    const closeSidebar = () => setCollapsed(true);
+
     return (
       <>
         {/* Overlay backdrop */}
         {!collapsed && (
           <div
-            onClick={toggle}
+            onClick={closeSidebar}
             className="fixed inset-0 bg-black/45 z-[100]"
             aria-hidden="true"
           />
@@ -177,7 +188,7 @@ export default function Sidebar() {
           )}
         >
           <BannerBackground variant="subtle" className="flex-1">
-            <SidebarContent collapsed={false} onClose={toggle} />
+            <SidebarContent collapsed={false} onClose={closeSidebar} />
           </BannerBackground>
         </aside>
       </>
