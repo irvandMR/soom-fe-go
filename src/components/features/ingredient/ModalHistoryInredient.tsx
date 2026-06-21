@@ -6,8 +6,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import type { Ingredients, StockInHistoryItem } from "@/types/ingredients.type";
-import { formatRupiah } from "@/utils/format";
+import type { Ingredients } from "@/types/ingredients.type";
+import { formatRupiah, formatDateLong, formatTime } from "@/utils/format";
 import {
   CalendarIcon,
   ClockIcon,
@@ -24,29 +24,6 @@ interface ModalHistoryIngredientProps {
   ingredientData?: Ingredients | null;
 }
 
-// ── Helper: format tanggal ─────────────────────────────────────────────────
-function formatDate(isoString: string) {
-  const date = new Date(isoString);
-  return new Intl.DateTimeFormat("id-ID", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  }).format(date);
-}
-
-function formatTime(isoString: string) {
-  const date = new Date(isoString);
-  return new Intl.DateTimeFormat("id-ID", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).format(date);
-}
-
-// ── Helper: ambil "YYYY-MM-DD" dari ISO string ───────────────────────────────
-function toDateKey(isoString: string) {
-  return isoString.slice(0, 10);
-}
 
 export default function ModalHistoryIngredient({
   open,
@@ -195,7 +172,7 @@ export default function ModalHistoryIngredient({
                       </span>
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
                         <CalendarIcon size={11} />
-                        <span>{formatDate(item.created_at)}</span>
+                        <span>{formatDateLong(item.created_at)}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-1 text-[10px] text-muted-foreground">

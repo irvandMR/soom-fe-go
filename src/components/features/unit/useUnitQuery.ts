@@ -16,7 +16,15 @@ export function useGetUnitAll() {
     queryKey: ["unit-all"],
     queryFn: async () => {
       const res = await unitService.getAll();
-      return res.data.result;
+      const rawData = res.data?.result ?? res.data?.data ?? res.data;
+
+      if (Array.isArray(rawData)) {
+        return rawData;
+      }
+      if (rawData && typeof rawData === "object" && Array.isArray((rawData as any).data)) {
+        return (rawData as any).data;
+      }
+      return [];
     },
   });
 }

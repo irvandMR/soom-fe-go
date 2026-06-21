@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, CalendarCheck, ChevronRight } from "lucide-react";
 import type { Ingredients, StockInHistoryItem } from "@/types/ingredients.type";
-import { formatRupiah } from "@/utils/format";
+import { formatRupiah, formatDateTime } from "@/utils/format";
 import { useState, useMemo } from "react";
 import { useIngredientHistoryQuery } from "@/components/features/ingredient/useIngredientQuery";
 import { useUpdateIngredient } from "@/components/features/ingredient/useIngredientMutation";
@@ -22,18 +22,6 @@ import {
 } from "@/components/ui/input-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-// ── Helper: format tanggal ─────────────────────────────────────────────────
-function formatDate(isoString: string) {
-  const date = new Date(isoString);
-  return new Intl.DateTimeFormat("id-ID", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).format(date);
-}
 
 interface FormModalEditIngredientProps {
   open: boolean;
@@ -224,7 +212,7 @@ export default function FormModalEditIngredient({
                           {index + 1}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          {formatDate(item.created_at)}
+                          {formatDateTime(item.created_at)}
                         </span>
                       </div>
                       <ChevronRight
@@ -282,7 +270,7 @@ export default function FormModalEditIngredient({
                   />
                   <p className="text-xs text-[var(--status-info-text)]">
                     Transaksi:{" "}
-                    <strong>{formatDate(selectedHistory.created_at)}</strong>
+                    <strong>{formatDateTime(selectedHistory.created_at)}</strong>
                   </p>
                 </div>
 

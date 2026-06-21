@@ -36,8 +36,6 @@ export function useUpdateCategories({ onSuccess }: UseMutationOptions = {}) {
     mutationFn: (data: UpdateCategoriesPaylaod) =>
       categoriesService.update({ ...data }),
     onSuccess: (_, variables) => {
-      console.log("var", variables);
-
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       toast.success(`Kategori "${variables.name}" berhasil diperbarui!`);
       onSuccess?.();
