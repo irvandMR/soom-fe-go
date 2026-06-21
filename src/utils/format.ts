@@ -21,3 +21,34 @@ export const formatDate = (dateStr: string | null | undefined): string => {
     return dateStr;
   }
 };
+
+export const formatDateTime = (isoString: string) => {
+  const date = new Date(isoString);
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
+};
+
+export const formatDateLong = (isoString: string) => {
+  const date = new Date(isoString);
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+};
+
+export const formatTime = (isoString: string) => {
+  const date = new Date(isoString);
+  return new Intl.DateTimeFormat("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(date);
+};
+

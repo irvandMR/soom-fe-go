@@ -119,7 +119,7 @@ export default function CategoriPage() {
             activeFilters={activeFilters}
             onFilterChange={setFilter}
             onReset={resetFilters}
-            allOptionLabel="Semua Unit Dasar"
+            allOptionLabel="Semua Kategori"
           />
         </div>
       </BannerBackground>
