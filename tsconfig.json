@@ -9,9 +9,12 @@
     }
   ],
   "compilerOptions": {
+    // nanti in isemua di hapus
     "noImplicitAny": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
+    "skipLibCheck": true,
+    // 
     "paths": {
       "@/*": [
         "./src/*"
