@@ -8,6 +8,13 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { SECTIONDOCS } from "@/constant/section-doc";
 import { ROUTES } from "@/constant/routes";
@@ -50,7 +57,7 @@ export default function HelpGuide() {
         title="Bantuan & Panduan Fitur"
       >
         {/* Pulsing outer ring animation */}
-        <span className="absolute -inset-0.5 rounded-full bg-[var(--fandm-primary)]/40 animate-ping group-hover:hidden" />
+        <span className="absolute -inset-0.5 rounded-full bg-[var(--fandm-primary)]/40  group-hover:hidden" />
         <HelpCircle size={17} className="animate-bounce group-hover:animate-none shrink-0" />
         <span className="text-xs font-bold tracking-wide pr-1 whitespace-nowrap">
           Panduan
@@ -59,7 +66,7 @@ export default function HelpGuide() {
 
       {/* Guide Details Modal */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-lg max-h-[85dvh] overflow-y-auto">
+        <DialogContent className="sm:max-w-lg max-h-[85dvh] flex flex-col">
           <DialogHeader>
             <div className="flex items-center gap-2 mb-1">
               <BookOpen size={16} className="text-[var(--fandm-primary)]" />
@@ -75,27 +82,31 @@ export default function HelpGuide() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex flex-col gap-4 py-3">
+          <div className="flex flex-col gap-4 py-3 min-h-0 overflow-hidden flex-1">
             {/* Quick Section Switcher dropdown */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
                 Pilih Topik Panduan Lain:
               </label>
-              <select
-                value={activeSection}
-                onChange={(e) => setActiveSection(Number(e.target.value))}
-                className="w-full h-9 px-3 text-xs border rounded-lg bg-white border-slate-200 text-slate-700 focus:outline-none focus:ring-1 focus:ring-[var(--fandm-primary)] cursor-pointer"
+              <Select
+                value={String(activeSection)}
+                onValueChange={(val) => setActiveSection(Number(val))}
               >
-                {SECTIONDOCS.map((sec) => (
-                  <option key={sec.id} value={sec.id}>
-                    Panduan {sec.title}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="w-full h-9 px-3 text-xs border rounded-lg bg-white border-slate-200 text-slate-700 focus:outline-none focus:ring-1 focus:ring-[var(--fandm-primary)] cursor-pointer">
+                  <SelectValue placeholder="Pilih Topik Panduan Lain:" />
+                </SelectTrigger>
+                <SelectContent>
+                  {SECTIONDOCS.map((sec) => (
+                    <SelectItem key={sec.id} value={String(sec.id)}>
+                      Panduan {sec.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Steps Guide Layout */}
-            <div className="flex flex-col gap-2.5">
+            <div className="flex flex-col gap-2.5 overflow-y-auto pr-1 flex-1">
               {currentGuide.steps.map((step, idx) => (
                 <div
                   key={idx}

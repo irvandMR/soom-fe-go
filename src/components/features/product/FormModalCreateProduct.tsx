@@ -71,12 +71,13 @@ export default function FormModalCreateProduct({
 
   useEffect(() => {
     if (open) {
-      console.log("filteredCategoryOptions : ", filteredCategoryOptions);
 
       const defaultCategory = filteredCategoryOptions[0]
-      console.log("def", defaultCategory);
+
 
       if (editData) {
+        console.log("editData", editData);
+
         reset({
           code: editData.code ?? "",
           name: editData.name ?? "",

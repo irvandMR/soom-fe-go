@@ -142,6 +142,7 @@ export default function RecipeManageModal({
 }: RecipeManageModalProps) {
   if (!product) return null;
 
+
   const [activeSubTab, setActiveSubTab] = useState<"edit" | "history">("edit");
   const [notes, setNotes] = useState("");
   const [estimatedYield, setEstimatedYield] = useState<number>(1);
@@ -329,7 +330,7 @@ export default function RecipeManageModal({
         </div>
 
         {/* Scrollable Content Area */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5 py-4">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 py-4 min-h-0">
           {activeSubTab === "edit" ? (
             <div className="flex flex-col gap-4">
               {/* Notes */}
