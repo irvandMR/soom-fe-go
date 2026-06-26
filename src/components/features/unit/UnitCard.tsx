@@ -2,6 +2,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { Unit } from "@/types/unit.type";
+import { Badge } from "@/components/ui/badge";
 
 interface UnitCardProps {
   data: Unit;
@@ -24,18 +25,21 @@ export default function UnitCard({ data, onEdit, onDelete }: UnitCardProps) {
             </div>
 
             {/* Nama + tanggal */}
-            {/* <div className="min-w-0">
+            <div className="min-w-0">
               <p className="text-sm font-medium text-[var(--fandm-text)] truncate">
                 {data.name}
               </p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {new Date(data.).toLocaleDateString("id-ID", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
+                Have Conversion : {data.have_conversion ? <Badge variant="info">Ya</Badge> : <Badge variant="destructive">Tidak</Badge>}
+
+                {data.have_conversion && (
+                  <>
+                    <br />
+                    1 {data.symbol} = {data.conversion_factor} {data.base_unit}
+                  </>
+                )}
               </p>
-            </div> */}
+            </div>
           </div>
 
           {/* Kanan: aksi */}
