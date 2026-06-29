@@ -46,7 +46,7 @@ export default function FormModalCreateIngredient({
       const typeStr = (cat.type || "").toLowerCase();
       const nameStr = (cat.name || "").toLowerCase();
       const typeToFind = (defaultCategoryType || "ingredient").toLowerCase();
-      
+
       if (typeToFind === "packaging") {
         return (
           typeStr.includes("packaging") ||
@@ -58,17 +58,18 @@ export default function FormModalCreateIngredient({
           nameStr.includes("wadah")
         );
       }
-      
+
       return (
         typeStr === "ingredient" ||
         nameStr.includes("bahan baku") ||
         (!typeStr.includes("packaging") &&
-         !typeStr.includes("kemasan") &&
-         !typeStr.includes("box") &&
-         !nameStr.includes("packaging") &&
-         !nameStr.includes("kemasan") &&
-         !nameStr.includes("box") &&
-         !nameStr.includes("wadah"))
+          !typeStr.includes("kemasan") &&
+          !typeStr.includes("box") &&
+          !nameStr.includes("packaging") &&
+          !nameStr.includes("kemasan") &&
+          !nameStr.includes("box") &&
+          !nameStr.includes("wadah") &&
+          !nameStr.includes("product"))
       );
     });
   }, [categoryOption, defaultCategoryType]);
@@ -77,7 +78,7 @@ export default function FormModalCreateIngredient({
     return unitOption.filter((unit: any) => {
       const sym = (unit.symbol || "").toLowerCase();
       const name = (unit.name || "").toLowerCase();
-      
+
       const isWeightOrVolume =
         sym === "kg" ||
         sym === "g" ||
@@ -91,11 +92,11 @@ export default function FormModalCreateIngredient({
         name.includes("gram") ||
         name.includes("liter") ||
         name.includes("kilogram");
-        
+
       if (defaultCategoryType === "packaging") {
         return !isWeightOrVolume;
       }
-      
+
       return true;
     });
   }, [unitOption, defaultCategoryType]);

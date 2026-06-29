@@ -2,7 +2,9 @@ import * as React from "react";
 import { Select as SelectPrimitive } from "radix-ui";
 
 import { cn } from "@/lib/utils";
-import { ChevronDownIcon, CheckIcon, ChevronUpIcon } from "lucide-react";
+import { ChevronDownIcon, CheckIcon, ChevronUpIcon, Search } from "lucide-react";
+
+// Search context is no longer needed since we perform synchronous child filtering
 
 function Select({
   ...props
@@ -67,8 +69,105 @@ function SelectContent({
   children,
   position = "item-aligned",
   align = "center",
+  showSearch = true,
+  searchPlaceholder = "Cari...",
   ...props
-}: React.ComponentProps<typeof SelectPrimitive.Content>) {
+}: React.ComponentProps<typeof SelectPrimitive.Content> & {
+  showSearch?: boolean;
+  searchPlaceholder?: string;
+}) {
+  const [searchQuery, setSearchQuery] = React.useState("");
+
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  React.useEffect(() => {
+    if (showSearch) {
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [showSearch]);
+
+  const filteredChildren = React.useMemo(() => {
+    if (!showSearch || !searchQuery.trim()) return children;
+
+    const query = searchQuery.toLowerCase().trim();
+
+    const getTextContent = (node: React.ReactNode): string => {
+      if (!node) return "";
+      if (typeof node === "string" || typeof node === "number") {
+        return String(node);
+      }
+      if (Array.isArray(node)) {
+        return node.map(getTextContent).join(" ");
+      }
+      if (React.isValidElement(node)) {
+        return getTextContent((node.props as any).children);
+      }
+      return "";
+    };
+
+    const filterNode = (node: React.ReactNode): React.ReactNode => {
+      if (!node) return null;
+      if (Array.isArray(node)) {
+        const mapped = node.map(filterNode).filter(Boolean);
+        return mapped.length > 0 ? mapped : null;
+      }
+      if (React.isValidElement(node)) {
+        const props = node.props as any;
+
+        // If it's a SelectItem (has value prop)
+        if (props && props.value !== undefined) {
+          const text = getTextContent(props.children).toLowerCase();
+          const val = String(props.value).toLowerCase();
+          const matches = text.includes(query) || val.includes(query);
+          return matches ? node : null;
+        }
+
+        // Hide labels and separators during search
+        const isLabelOrSeparator =
+          props &&
+          (props["data-slot"] === "select-label" || props["data-slot"] === "select-separator");
+        if (isLabelOrSeparator) {
+          return null;
+        }
+
+        // If it's a group or has children, filter recursively
+        if (props && props.children) {
+          const filtered = filterNode(props.children);
+          if (!filtered) return null;
+          return React.cloneElement(node, { children: filtered } as any);
+        }
+      }
+      return node;
+    };
+
+    return filterNode(children);
+  }, [children, searchQuery, showSearch]);
+
+  const hasMatches = React.useMemo(() => {
+    if (!showSearch || !searchQuery.trim()) return true;
+
+    const checkHasElements = (node: React.ReactNode): boolean => {
+      if (!node) return false;
+      if (Array.isArray(node)) {
+        return node.some(checkHasElements);
+      }
+      if (React.isValidElement(node)) {
+        const props = node.props as any;
+        if (props && props.value !== undefined) {
+          return true;
+        }
+        if (props && props.children) {
+          return checkHasElements(props.children);
+        }
+      }
+      return false;
+    };
+
+    return checkHasElements(filteredChildren);
+  }, [filteredChildren, searchQuery, showSearch]);
+
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
@@ -85,6 +184,35 @@ function SelectContent({
         {...props}
       >
         <SelectScrollUpButton />
+
+        {showSearch && (
+          <div className="sticky top-0 z-10 bg-popover px-2 py-1.5 border-b border-border">
+            <div className="relative flex items-center">
+              <Search className="absolute left-2 size-3.5 text-muted-foreground pointer-events-none" />
+              <input
+                ref={inputRef}
+                type="text"
+                placeholder={searchPlaceholder}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape" || e.key === "Tab") {
+                    return;
+                  }
+                  e.stopPropagation();
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                  }
+                }}
+                onPointerDown={(e) => {
+                  e.stopPropagation();
+                }}
+                className="w-full rounded-md border border-input bg-transparent pl-7 pr-2 py-1 text-xs outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring"
+              />
+            </div>
+          </div>
+        )}
+
         <SelectPrimitive.Viewport
           data-position={position}
           className={cn(
@@ -92,7 +220,13 @@ function SelectContent({
             position === "popper" && "",
           )}
         >
-          {children}
+          {filteredChildren}
+
+          {showSearch && searchQuery.trim() !== "" && !hasMatches && (
+            <div className="py-6 text-center text-xs text-muted-foreground">
+              Tidak ada hasil ditemukan
+            </div>
+          )}
         </SelectPrimitive.Viewport>
         <SelectScrollDownButton />
       </SelectPrimitive.Content>
